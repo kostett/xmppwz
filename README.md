@@ -12,8 +12,6 @@ Installing:
 
 How to make it daemonize? Google knows, but I'm add "/usr/bin/python2.7 /usr/bin/local/xmppwz.py &" in /etc/rc.local before "exit 0".
 
-Written from http://devhead.ru/read/jabber-bot-dlya-otpravki-vneshnego-ip-adresa
-
 Usage for clients: CODE
 
 You can find out code of your city airport here - http://www.rap.ucar.edu/weather/surface/stations.txt
