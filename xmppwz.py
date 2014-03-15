@@ -18,7 +18,7 @@ password=(config.get('account', 'password'))
 presence=(config.get('presence','presence'))
 
 jid=xmpp.protocol.JID(user)
-client=xmpp.Client(jid.getDomain())
+client=xmpp.Client(jid.getDomain(),debug=[])
 client.connect()
 client.auth(jid.getNode(),password,"METAR weather bot")
 
