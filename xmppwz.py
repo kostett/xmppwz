@@ -35,7 +35,6 @@ def messageCB(conn,msg):
         else:
             conn.send(xmpp.Message(msg.getFrom(),"Usage: CODE\nYou  can find out code of your city airport here - http://www.rap.ucar.edu/weather/surface/stations.txt"))
 
-
 def presenceCB(conn,msg):
     if ( msg.getType() == "subscribe" ):
         conn.send(xmpp.Presence(to=msg.getFrom(), typ='subscribed'))
@@ -64,8 +63,8 @@ def main():
     password=(config.get('account', 'password'))
     presence=(config.get('presence','presence'))
     jid=xmpp.protocol.JID(user)
-    cl = xmpp.Client(jid.getDomain())
-    # cl = xmpp.Client(jid.getDomain(), debug=[])
+    # cl = xmpp.Client(jid.getDomain()) # enable debug
+    cl = xmpp.Client(jid.getDomain(), debug=[]) # disable debug
     if cl.connect() == "":
         print "not connected"
         sys.exit(0)
