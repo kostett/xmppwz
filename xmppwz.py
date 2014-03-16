@@ -4,6 +4,10 @@
 import sys, os, signal, time, re
 import xmpp, urllib2, ConfigParser
 
+def iqCB(conn,iq_node):
+    reply=iq_node.buildReply('result')
+    conn.send(reply)
+
 def messageCB(conn,msg):
     command = msg.getBody()
     if ( command is not None ):
@@ -35,8 +39,14 @@ def messageCB(conn,msg):
 def presenceCB(conn,msg):
     if ( msg.getType() == "subscribe" ):
         conn.send(xmpp.Presence(to=msg.getFrom(), typ='subscribed'))
+        conn.send(xmpp.Presence(to=msg.getFrom(), typ='subscribe'))
     
 def StepOn(conn):
+    global metarbotlastping
+    if time.time() - metarbotlastping > 30:
+        metarbotlastping = time.time()
+        ping = xmpp.Protocol('iq',typ='get',payload=[xmpp.Node('ping',attrs={'xmlns':'urn:xmpp:ping'})])
+        res = conn.SendAndWaitForResponse(ping, 1)
     try:
         conn.Process(1)
     except KeyboardInterrupt:
@@ -54,8 +64,8 @@ def main():
     password=(config.get('account', 'password'))
     presence=(config.get('presence','presence'))
     jid=xmpp.protocol.JID(user)
-    # cl = xmpp.Client(jid.getDomain()) # debug enabled
-    cl = xmpp.Client(jid.getDomain(), debug=[]) #debug disabled
+    cl = xmpp.Client(jid.getDomain())
+    # cl = xmpp.Client(jid.getDomain(), debug=[])
     if cl.connect() == "":
         print "not connected"
         sys.exit(0)
@@ -64,9 +74,11 @@ def main():
         sys.exit(0)
     cl.UnregisterDisconnectHandler(cl.DisconnectHandler)
     cl.RegisterDisconnectHandler(cl.reconnectAndReauth())
-    cl.RegisterHandler('message', messageCB)
     cl.RegisterHandler('presence', presenceCB)
+    cl.RegisterHandler('iq',iqCB)
+    cl.RegisterHandler('message', messageCB)
     cl.sendInitPresence()
     GoOn(cl)
-    
+
+metarbotlastping = time.time()    
 main()
