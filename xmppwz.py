@@ -12,7 +12,7 @@ def messageCB(conn,msg):
     command = msg.getBody()
     if ( command is not None ):
         command = command.strip()
-        check = re.compile(r'^[A-Za-z\s]*$')
+        check = re.compile(r'^[0-9A-Za-z\s]*$')
         if ( len(command) == 4 and check.match(command) ):
             strURL = 'http://weather.noaa.gov/pub/data/observations/metar/decoded/' + command.upper() + '.TXT'
             req = urllib2.Request(strURL)
