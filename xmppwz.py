@@ -65,10 +65,10 @@ def main():
     jid=xmpp.protocol.JID(user)
     # cl = xmpp.Client(jid.getDomain()) # enable debug
     cl = xmpp.Client(jid.getDomain(), debug=[]) # disable debug
-    if cl.connect() == "":
+    if not cl.connect((jid.getDomain(),5222), None, None, False):
         print "not connected"
         sys.exit(0)
-    if cl.auth(jid.getNode(),password,"METAR weather bot") is None:
+    if cl.auth(jid.getNode(),password,"METAR weather bot", sasl=1) is None:
         print "authentication failed"
         sys.exit(0)
     cl.UnregisterDisconnectHandler(cl.DisconnectHandler)
